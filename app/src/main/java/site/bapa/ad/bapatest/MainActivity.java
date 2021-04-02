@@ -1,5 +1,6 @@
 package site.bapa.ad.bapatest;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -12,6 +13,9 @@ import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
+
+import site.bapa.ad.AppState.BapaPermission;
+import site.bapa.ad.AppState.BapaStatic;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +34,25 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+
+        if (!BapaPermission.getPermissionGranted_PACKAGE_USAGE_STATS(this)) {
+            BapaPermission.allowPermission_PACKAGE_USAGE_STATS(this);
+        }
+        if (!BapaPermission.getPermissionGranted_Popup(this)) {
+            BapaPermission.allowPermission_Popup(this);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (BapaPermission.getPermissionGranted_PACKAGE_USAGE_STATS(this) && BapaPermission.getPermissionGranted_Popup(this)) {
+            Intent intent_type = new Intent(BapaStatic.service_name);
+            intent_type.setPackage(getPackageName());
+            startService(intent_type);
+        }
     }
 
     @Override
